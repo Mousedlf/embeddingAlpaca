@@ -9,6 +9,7 @@ use App\Service\CosineSimilarity;
 use App\Service\Fetch;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,10 +19,12 @@ class EmbeddingController extends AbstractController
 
     #[Route('/embedding', name: 'app_embedding')]
     public function calculateSimilarity(Fetch $service, CosineSimilarity $serviceSimilarity,
-                                        EntityManagerInterface $manager, WordRepository $repository): Response
+                                        EntityManagerInterface $manager, WordRepository $repository, Request $request): Response
     {
         $secretWord = "banane"; // prendre mot au pif de la DB ?
-        $prompt = "table"; // a terme recup mot du formulaire
+
+        $prompt = $request->getPayload()->get('prompt');
+        //dd($prompt);
 
         $secretWordA = $repository->findOneBy(['name'=> $secretWord]);
 
