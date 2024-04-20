@@ -21,14 +21,18 @@ class EmbeddingController extends AbstractController
     public function calculateSimilarity(Fetch $service, CosineSimilarity $serviceSimilarity,
                                         EntityManagerInterface $manager, WordRepository $repository, Request $request): Response
     {
-        $secretWord = "banane"; // prendre mot au pif de la DB ?
+        $numberOfWordsInRepo = $repository->count();
+        $randomNumber = rand(0, $numberOfWordsInRepo);
+// dd($randomNumber);
 
         $prompt = $request->getPayload()->get('prompt');
         //dd($prompt);
+        
+//condition if a ajouter
+// si id pas existant alors relancer rand
+        $secretWord = $repository->findOneBy(['id'=> $randomNumber]);
 
-        $secretWordA = $repository->findOneBy(['name'=> $secretWord]);
-
-        foreach($secretWordA->getEmbeddings() as $embedding){
+        foreach($secretWord->getEmbeddings() as $embedding){
             $secretWordEmbedding[] = $embedding->getValue();
         }
 
